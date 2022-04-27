@@ -11,19 +11,18 @@ classdef RPAS_Constants
 
         % The saved images and qualification files will be saved to the
         % following folders. These folders are relative folder to the
-        % RPAS_HOME directory
         QUAL_RESULT_DIR = 'QUAL_TEST_RESULTS';
         QUAL_IMAGE_DIR = 'TEST_IMAGES';
         QUAL_DATA_SHEET_DIR='QualDataSheetFolder';
-        
+
         % The following constants controls the algorithm to use live
         % captured image or test image in the program
         
         %In the final programs, the HardwareAvailiable and A3200Available
         %should set to true;
         ImageJ_algorithm = false;
-        HardwareAvailable= true;%false;
-        A3200Available=true;
+        HardwareAvailable= false;
+        A3200Available=false;%true;
 
         %Camera addresses
         SWD_Address=0;
@@ -31,24 +30,28 @@ classdef RPAS_Constants
     end
 
     properties (Access = public)
-        %Project home directory, i.e. the direcory where app RPAS_AQT's
+        %Project home directory, i.e. the direcory of app RPAS_AQT's
         %home directory. It is determined dymatically.
-        RPAS_HOME;
+        RPAS_HOME = [];
+
         A3200Path;
     end
 
     methods (Access = public)
         function obj = RPAS_Constants()
-            path = mfilename('fullpath');
-            arch=computer('arch');
-            if strcmp(arch, 'win32') | strcmp(arch, 'win64')
-                pattern='\';
-            else
-                pattern='/';
+            if isempty(obj.RPAS_HOME)
+                path = mfilename('fullpath');
+                arch=computer('arch');
+                if strcmp(arch, 'win32') || strcmp(arch, 'win64')
+                    pattern='\';
+                else
+                    pattern='/';
+                end
+                j=strfind(path, pattern);
+                obj.RPAS_HOME = path(1:j(end-1)-1);
             end
-            j=strfind(path, pattern);
-            obj.RPAS_HOME = path(1:j(end-1)-1);
 
+            arch=computer('arch');
             if(strcmp(arch, 'win32'))
 	            obj.A3200Path='C:\Program Files (x86)\Aerotech\A3200\Matlab\x86';
             elseif(strcmp(arch, 'win64'))

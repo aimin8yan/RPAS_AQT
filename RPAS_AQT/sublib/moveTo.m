@@ -27,7 +27,7 @@ function moveTo(val, coord, moveMethod)
         end
     end
     setMovingBusy(coord,0);
-    fid=fopen('tmp.dat', 'wb');
+    fid=fopen([RPAS_Constants().RPAS_HOME '/' RPAS_Constants.QUAL_DATA_SHEET_DIR '/tmp.dat'], 'wb');
         fwrite(fid,buffer, 'double');
     fclose(fid);
 end
