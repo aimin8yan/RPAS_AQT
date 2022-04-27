@@ -1,0 +1,6 @@
+# List of untracked files to ignore
+
+*.[oa]
+*~
+RPAS_AQT/QUAL_TEST_RESULTS/
+RPAS_AQT/QualDataSheetFolder/*
