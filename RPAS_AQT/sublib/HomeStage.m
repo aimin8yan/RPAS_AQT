@@ -17,22 +17,21 @@ function HomeStage(Axes, motionTimers, lampIndicators, colors)
     %  [app.xupdater, app.yupdater, app.zupdater] will be used to monitor all the x, y, z movements
     %
 
-
+    
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
     for k=1:numel(motionTimers)
         motionTimers(k).start();
     end
 
 
-    if ~RPAS_Constants.A3200Available
+    if ~RPAS_C.A3200Available
         ABSMoving(Axes, zeros(size(Axes)), 1, motionTimers)
     else
         % make connection
-        try
-            handle = A3200Connect;
-        catch
-            addpath(RPAS_Constants().A3200Path);
-            handle = A3200Connect;
-        end
+        handle = A3200Connect;
     
         %if the axes are still moving waiting for them to finish 
         %before we can make the move

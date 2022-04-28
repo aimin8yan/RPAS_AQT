@@ -16,6 +16,7 @@ function prop=RPAS_geoProperties_imagej(img)
   MIJ.run('Clear Results');
   MIJ.closeAllWindows();
   
+  RPAS_Alignment_7dot2(img2)
   return;
   
   function result=toImageJMeasureFmt(title, val)

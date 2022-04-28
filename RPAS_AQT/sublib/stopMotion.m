@@ -1,13 +1,12 @@
-function stopMotion(motionTimers)
-    if RPAS_Constants.A3200Available
+function stopMotion(motionTimers, app)
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
+    if RPAS_C.A3200Available
         axes=[0,1,2];
         % make connection
-        try
-            handle = A3200Connect;
-        catch
-            addpath(RPAS_Constants().A3200Path);
-            handle = A3200Connect;
-        end
+        handle = A3200Connect;
         A3200MotionAbort (handle, axes);
 
         %make disconnection
@@ -15,5 +14,13 @@ function stopMotion(motionTimers)
     end
     for k=1:numel(motionTimers)
         motionTimers(k).stop();
+    end
+    if nargin==2
+        if isprop(app, 'motionStatus') && ~isempty(app.motionStatus)
+            status=app.motionStatus.status;
+            if ~strcmp(status,'finished')
+                app.motionStatus.status='aborted';
+            end
+        end
     end
 end

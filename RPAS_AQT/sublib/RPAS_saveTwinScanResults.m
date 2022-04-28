@@ -1,10 +1,13 @@
 function saveTwinScanResults(operatorInfo, ALLOWED_ERROR, QUAL, TWNSCN)
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
   matchPos={'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T','U','V','W', 'X', 'Y','Z'};
 
   fieldColor=readFieldColor();
 
-  HOME=RPAS_Constants().RPAS_HOME;
-  DIR=[HOME '/' RPAS_Constants.QUAL_RESULT_DIR '/Twinscan/' operatorInfo.ID];
+  DIR=[RPAS_C.QUAL_RESULT_DIR '/Twinscan/' operatorInfo.ID];
   RPAS_Make_folder(DIR);
 
   dt=datetime();
@@ -12,7 +15,7 @@ function saveTwinScanResults(operatorInfo, ALLOWED_ERROR, QUAL, TWNSCN)
   fout=[DIR '/RPAS_TWINSCAN_Report_' datetimestring '.xlsx'];
 
   %image folder
-  IMG_DIR=[DIR '/' RPAS_Constants.QUAL_IMAGE_DIR ];
+  IMG_DIR=[DIR '/TEST_IMAGES' ];
   RPAS_Make_folder(IMG_DIR);
   if (~isempty(QUAL.SWDvalue))
       images=QUAL.SWD_images;

@@ -40,7 +40,11 @@ function val = isAuthorized()
   
   % read in saved records from file, decryption is required if needed
   function records=readinRecord()
-    PATH=[RPAS_Constants().RPAS_HOME '/' RPAS_Constants.QUAL_DATA_SHEET_DIR];
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
+    PATH=RPAS_C.QUAL_DATA_SHEET_DIR;
     fnm=[PATH '/passwordFile.dat'];
     fid=fopen(fnm,'rb');
     if fid>0

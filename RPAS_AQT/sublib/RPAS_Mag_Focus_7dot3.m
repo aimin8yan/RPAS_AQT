@@ -14,6 +14,10 @@ function out=RPAS_Mag_Focus_7_dot_3(in)
   %
   
   % parameter for subpixel refining 
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
   BIN= 4;
   
   if ischar(in)
@@ -23,7 +27,7 @@ function out=RPAS_Mag_Focus_7_dot_3(in)
   end
   
 
-  if (RPAS_Constants.ImageJ_algorithm)
+  if (RPAS_C.ImageJ_algorithm)
     prop=RPAS_geoProperties_imagej(img);
   else
     % determine ROI
@@ -40,7 +44,7 @@ function out=RPAS_Mag_Focus_7_dot_3(in)
     tform = affine2d(mat);
     img=imwarp(img,tform);
     
-    if (RPAS_Constants.ImageJ_algorithm)
+    if (RPAS_C.ImageJ_algorithm)
       prop=RPAS_geoProperties_imagej(img);
     else
       % determine ROI
@@ -54,20 +58,21 @@ function out=RPAS_Mag_Focus_7_dot_3(in)
 
   
   % compute the magnification
-  M = 0.5*(prop.Width/RPAS_Constants.Outer_Frame_Width + prop.Height/RPAS_Constants.Outer_Frame_Height);
-  M = M*RPAS_Constants.Pixel_img_plane/RPAS_Constants.Pixel_obj_plane; % converting to nominal position;
+  M = 0.5*(prop.Width/RPAS_C.Outer_Frame_Width + prop.Height/RPAS_C.Outer_Frame_Height);
+  M = M*RPAS_C.Pixel_img_plane/RPAS_C.Pixel_obj_plane; % converting to nominal position;
   
 
   % generate MAX image 
   r=20;
   se=strel('disk',r,0);
   MAX=double(imdilate(img,se));
+
   
   %ESF
   ct=[round(prop.Y), round(prop.X)];
-  
-  esf_x=MAX(ct(1), ct(2):ct(2)+floor(RPAS_Constants.Outer_Frame_Width/2));
-  esf_y=MAX(ct(1):ct(1)+floor(RPAS_Constants.Outer_Frame_Height/2), ct(2))';
+
+  esf_x=MAX(ct(1), ct(2):ct(2)+floor(RPAS_C.Outer_Frame_Width/2));
+  esf_y=MAX(ct(1):ct(1)+floor(RPAS_C.Outer_Frame_Height/2), ct(2))';
 
 
   
@@ -125,7 +130,7 @@ function out=RPAS_Mag_Focus_7_dot_3(in)
   
       
   % frequency in units (\mu m^{-1})
-  pix=RPAS_Constants.Pixel_img_plane/BIN;
+  pix=RPAS_C.Pixel_img_plane/BIN;
   dlt=1/(N*pix);
   freq_x= (0:numel(mtf_x)-1)*dlt;
   freq_y= (0:numel(mtf_y)-1)*dlt;

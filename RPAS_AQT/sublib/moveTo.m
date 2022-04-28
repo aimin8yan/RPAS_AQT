@@ -1,4 +1,8 @@
 function moveTo(val, coord, moveMethod)
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
     global buffer;
     if isempty(buffer)
         buffer=[0 0 0;0 0 0];
@@ -27,7 +31,7 @@ function moveTo(val, coord, moveMethod)
         end
     end
     setMovingBusy(coord,0);
-    fid=fopen([RPAS_Constants().RPAS_HOME '/' RPAS_Constants.QUAL_DATA_SHEET_DIR '/tmp.dat'], 'wb');
+    fid=fopen([RPAS_C.QUAL_DATA_SHEET_DIR '/tmp.dat'], 'wb');
         fwrite(fid,buffer, 'double');
     fclose(fid);
 end

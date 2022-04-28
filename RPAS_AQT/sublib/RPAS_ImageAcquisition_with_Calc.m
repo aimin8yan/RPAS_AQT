@@ -55,12 +55,16 @@ function RPAS_ImageAcquisition_with_Calc(cameraSource, axe, targetVals, ...
 end
 
 function cam=cameraObject(source)
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
     SWD=1;
     LWD=0;
     if source==SWD
-        cameraAddress=RPAS_Constants.SWD_Address;
+        cameraAddress=RPAS_C.SWD_Address;
     elseif source==LWD
-        cameraAddress=RPAS_Constants.LWD_Address;
+        cameraAddress=RPAS_C.LWD_Address;
     else
         errorMsg("Unsupported Camera Source.");
     end

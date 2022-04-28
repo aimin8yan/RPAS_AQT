@@ -1,4 +1,4 @@
-function ABSMoving(Axes, MovingDistances, MovingSpeeds, motionTimers)
+function ABSMoving(Axes, MovingDistances, MovingSpeeds, motionTimers, app)
     %This routine combines the X,Y,and ZABS together to make absolute
     %moving. It added a feature of disabling the motion and closing the
     %connection. No other activity can be done while the system is moving.
@@ -19,6 +19,10 @@ function ABSMoving(Axes, MovingDistances, MovingSpeeds, motionTimers)
     % In above examples, X-dist, Y-dist, and X-home, Y-home, Z-home are
     % true distances to move in corresponding axis.
 
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
     
     if numel(Axes) ~= numel(MovingDistances) numel(Axes)<1 | numel(Axes)>3
         error('The three inputs must be vectors of size 1, 2, or 3 and same length.');
@@ -30,12 +34,20 @@ function ABSMoving(Axes, MovingDistances, MovingSpeeds, motionTimers)
     if isscalar(MovingSpeeds)
         MovingSpeeds=MovingSpeeds.*ones(size(Axes));
     end
+
+    if nargin==5
+        if isprop(app, 'motionStatus')
+            app.motionStatus=struct('axes', Axes, 'movingSpeeds', MovingSpeeds, ...
+                'movingDistances', MovingDistances, 'movingType', 'absolute', ...
+                'status', 'started', 'isPausing', false);
+        end
+    end
         
     for k=1:numel(motionTimers)
         motionTimers(k).start();
     end
 
-    if ~RPAS_Constants.A3200Available
+    if ~RPAS_C.A3200Available
         for k=1:numel(Axes)
             moveTo(MovingDistances(k), Axes(k), 'absolute');
         end
@@ -53,18 +65,13 @@ function ABSMoving(Axes, MovingDistances, MovingSpeeds, motionTimers)
         
     else
         % make connection
-        try
-            handle = A3200Connect;
-        catch
-            addpath(RPAS_Constants().A3200Path);
-            handle = A3200Connect;
-        end
+        handle = A3200Connect;
     
         %if the axes are still moving waiting for them to finish 
         %before we can make the move
         waitForMovingFinished(Axes);
         %wait a while for other process close the connection
-        pause(0.3);
+        pause(0.1);
 
         %enable motions
         taskID=1;
@@ -104,6 +111,13 @@ function ABSMoving(Axes, MovingDistances, MovingSpeeds, motionTimers)
 
     for k=1:numel(motionTimers)
         motionTimers(k).stop();
+    end
+
+
+    if nargin==5
+        if isprop(app, 'motionStatus')
+            app.motionStatus.status='finished';
+        end
     end
 end
         

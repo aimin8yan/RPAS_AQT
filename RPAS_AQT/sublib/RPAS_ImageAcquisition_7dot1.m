@@ -144,15 +144,19 @@ end
 
 function contShot_gigE(source, axe, pauseTime)
     global stopICBSignal;
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
 
     stopICBSignal=0;
 
     SWD=1;
     LWD=0;
     if source==SWD
-        cameraAddress=RPAS_Constants.SWD_Address;
+        cameraAddress=RPAS_C.SWD_Address;
     elseif source==LWD
-        cameraAddress=RPAS_Constants.LWD_Address;
+        cameraAddress=RPAS_C.LWD_Address;
     else
         errorMsg("Unsupported Camera Source.");
     end
@@ -203,7 +207,7 @@ function contShot_gigE(source, axe, pauseTime)
 
     cam.capture_req=1;
     %begin capture image
-    while isvalid(axe) & stopICBSignal == 0
+    while isvalid(axe) && stopICBSignal == 0
         %capture image
         try
             img=snapshot(cam);
@@ -227,12 +231,16 @@ function contShot_gigE(source, axe, pauseTime)
 end
 
 function img=singleShot_gigE(source)
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
     SWD=1;
     LWD=0;
     if source==SWD
-        cameraAddress=RPAS_Constants.SWD_Address;
+        cameraAddress=RPAS_C.SWD_Address;
     elseif source==LWD
-        cameraAddress=RPAS_Constants.LWD_Address;
+        cameraAddress=RPAS_C.LWD_Address;
     else
         errorMsg("Unsupported Camera Source.");
     end

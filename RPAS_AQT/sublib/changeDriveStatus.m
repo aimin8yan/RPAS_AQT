@@ -1,11 +1,10 @@
 function changeDriveStatus(axis, currentStatus, lampIndicator, colors)
-    if RPAS_Constants.A3200Available
-        try
-            handle = A3200Connect;
-        catch
-            addpath(RPAS_Constants().A3200Path);
-            handle = A3200Connect;
-        end
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
+    if RPAS_C.A3200Available
+        handle = A3200Connect;
         taskId=1;
     
         if currentStatus==1

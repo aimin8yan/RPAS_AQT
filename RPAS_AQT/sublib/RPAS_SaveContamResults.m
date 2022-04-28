@@ -1,15 +1,18 @@
 function saveContamResults(operatorInfo, data)
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
   fitting=false;
   matchPos={'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'};
   
-  HOME=RPAS_Constants().RPAS_HOME;
-  DIR=[HOME '/' RPAS_Constants.QUAL_RESULT_DIR '/AutoQual/' operatorInfo.SN];
+  DIR=[RPAS_C.QUAL_RESULT_DIR '/AutoQual/' operatorInfo.SN];
   RPAS_Make_folder(DIR);
   
   fout=[DIR '/Contam_Qual_Test_Result.xlsx'];
 
   %image folder
-  IMG_DIR=[DIR '/' RPAS_Constants.QUAL_IMAGE_DIR '/Detector_Contamination'];
+  IMG_DIR=[DIR '/TEST_IMAGES/Detector_Contamination'];
   RPAS_Make_folder(IMG_DIR);
 
   if (~isempty(data.SWD_data))

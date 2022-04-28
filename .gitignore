@@ -3,4 +3,10 @@
 *.[oa]
 *~
 RPAS_AQT/QUAL_TEST_RESULTS/
-RPAS_AQT/QualDataSheetFolder/*
+RPAS_AQT/Executable/
+RPAS_AQT/QualDataSheetFolder/parameters.txt
+RPAS_AQT/QualDataSheetFolder/passwordFile.dat
+RPAS_AQT/QualDataSheetFolder/PositionRecords.xlsx
+RPAS_AQT/QualDataSheetFolder/RPAS_Configuration.dat
+RPAS_AQT/QualDataSheetFolder/sample_data_collection_sheet.xlsx
+RPAS_AQT/QualDataSheetFolder/Test_*.xlsx

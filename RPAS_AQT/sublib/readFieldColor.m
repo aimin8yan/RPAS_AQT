@@ -1,5 +1,9 @@
   function val=readFieldColor()
-      fdir=[RPAS_Constants().RPAS_HOME '/' RPAS_Constants.QUAL_DATA_SHEET_DIR];
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
+      fdir=RPAS_C.QUAL_DATA_SHEET_DIR;
       fnm=[fdir '/Report_Color_Sheet.xlsx' ];
       A=readcell(fnm);
       val=struct('RPAS_NC_COLOR', [], ...

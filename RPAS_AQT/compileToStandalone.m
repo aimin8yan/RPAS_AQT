@@ -5,19 +5,33 @@ function compileToStandalone(dest)
     addpath('sublib');
     
     appFile='RPAS_AQT.mlapp';
-    img=[RPAS_Constants().RPAS_HOME  '/screenImages/AQT.PNG'];
+    img='screenImages/AQT.PNG';
+    arch=computer('arch');
+    if(strcmp(arch, 'win32'))
+        filesToAdd='C:\Program Files (x86)\Aerotech\A3200\Matlab\x86';
+    elseif(strcmp(arch, 'win64'))
+        filesToAdd='C:\Program Files (x86)\Aerotech\A3200\Matlab\x64';
+    end
+
     opts = compiler.build.StandaloneApplicationOptions(appFile, ...
+        'AdditionalFiles', filesToAdd, ...
         'ExecutableName', 'RPAS_AQT', ...
         'ExecutableIcon', img, ...
         'ExecutableSplashScreen', img, ...
         'Verbose', 'On', ...
+        'AutoDetectDataFiles', 'On', ...
         'OutputDir', dest);
 
-    %change working directory
-    modifyHome(dest);
+    %copy files to testination
+    copyFiles('QualDataSheetFolder', dest);
+    copyFiles('screenImages', dest);
+    copyFiles('testImages/AlignMagImages', dest);
+    copyFiles('testImages/contaminations', dest);
+    copyFiles('testImages/PgmImages', dest);
 
     compiler.build.standaloneWindowsApplication(opts);
-
+    
+return;
     appFile='setPassword.m';
     opts = compiler.build.StandaloneApplicationOptions(appFile, ...
         'ExecutableName', 'setPassword', ...
@@ -30,60 +44,7 @@ function compileToStandalone(dest)
         'OutputDir', [dest '/resetPassword']);
     compiler.build.standaloneWindowsApplication(opts);
 
-    %copy files to testination
-    copyFiles('QualDataSheetFolder', dest);
-    copyFiles('screenImages', dest);
-    copyFiles('testImages/AlignMagImages', dest);
-    copyFiles('testImages/contaminations', dest);
-    copyFiles('testImages/PgmImages', dest);
-
-    restoreHome();
-
-    function modifyHome(home)
-        out={};
-        fid=fopen('sublib/RPAS_Constants.m','rt');
-        while ~feof(fid)
-            tline=fgetl(fid);
-            if contains(tline, 'RPAS_HOME') & ~contains(tline,'obj.RPAS_HOME')
-                idx=strfind(tline, 'RPAS_HOME');
-                s=sprintf('%sRPAS_HOME = %s%s%s;', tline(1:idx-1),39,dest,39);
-                out{end+1}=s;
-            else
-                out{end+1}=tline;
-            end
-        end
-        fclose(fid);
-    
-    
-        fid=fopen('sublib/RPAS_Constants.m','wt');
-        for k=1:numel(out)
-            fprintf(fid,'%s\n', out{k});
-        end
-        fclose(fid);
-    end
-
-    function restoreHome()
-        out={};
-        fid=fopen('sublib/RPAS_Constants.m','rt');
-        while ~feof(fid)
-            tline=fgetl(fid);
-            if contains(tline, 'RPAS_HOME') & ~contains(tline,'obj.RPAS_HOME')
-                idx=strfind(tline, 'RPAS_HOME');
-                s=sprintf('%sRPAS_HOME = [];', tline(1:idx-1));
-                out{end+1}=s;
-            else
-                out{end+1}=tline;
-            end
-        end
-        fclose(fid);
-    
-    
-        fid=fopen('sublib/RPAS_Constants.m','wt');
-        for k=1:numel(out)
-            fprintf(fid,'%s\n', out{k});
-        end
-        fclose(fid);
-    end
+    return;
     
     function copyFiles(fdir, dest)
         listing=dir(fdir);

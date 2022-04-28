@@ -3,18 +3,21 @@ function saveMotionSystemValidationResults(data)
     if isempty(systemVar)
         systemVar=savedVariables();
     end
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
     matchPos={'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T','U','V','W', 'X', 'Y','Z'};
     fieldColor=readFieldColor();
     passColor=hex2dec('FFFFFF');
     failColor=fieldColor.FAIL_COLOR;
 
-    HOME=RPAS_Constants().RPAS_HOME;
-    DIR=[HOME '/' RPAS_Constants.QUAL_RESULT_DIR '/MotionSystemValidation'];
+    DIR=[RPAS_C.QUAL_RESULT_DIR '/MotionSystemValidation'];
     RPAS_Make_folder(DIR);
 
     fout=[DIR '/SPC_controlLog.xlsx'];
     if ~exist(fout)
-        copyfile([HOME '/sublib/SPC_controlLog.xlsx'], fout);
+        copyfile([RPAS_C.QUAL_DATA_SHEET_DIR '/sampleSPC_controlLog.xlsx'], fout);
     end
 
     mat=readmatrix(fout);

@@ -1,11 +1,14 @@
 
 function saveQualResults(operatorInfo, data)
+    global RPAS_C
+    if isempty(RPAS_C)
+        RPAS_C=RPAS_Constants(parentDir(pwd));
+    end
   fitting=false;
   matchPos={'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T','U','V','W', 'X', 'Y','Z'};
   fieldColor=readFieldColor();
   
-  HOME=RPAS_Constants().RPAS_HOME;
-  DIR=[HOME '/' RPAS_Constants.QUAL_RESULT_DIR '/AutoQual/' operatorInfo.SN];
+  DIR=[RPAS_C.QUAL_RESULT_DIR '/AutoQual/' operatorInfo.SN];
   RPAS_Make_folder(DIR);
   
   fout=[DIR '/RPAS_Qual_Report.xlsx'];

@@ -69,13 +69,12 @@ classdef updatePosition < handle
   methods 
     %callback functions
     function start(app)
-      if RPAS_Constants.A3200Available
-          try
-              app.A3200Handle=A3200Connect;
-          catch
-              addpath(RPAS_Constants().A3200Path);
-              app.A3200Handle=A3200Connect;
-          end
+      global RPAS_C
+      if isempty(RPAS_C)
+          RPAS_C=RPAS_Constants(parentDir(pwd));
+      end
+      if RPAS_C.A3200Available
+          app.A3200Handle=A3200Connect;
       end
 
       app.oldValue=[];
@@ -96,8 +95,11 @@ classdef updatePosition < handle
     end
     
     function updatePositionFcn(app, tm, event)
-      
-      if RPAS_Constants.A3200Available
+      global RPAS_C
+      if isempty(RPAS_C)
+          RPAS_C=RPAS_Constants(parentDir(pwd));
+      end
+      if RPAS_C.A3200Available
           newValue=A3200StatusGetItem(app.A3200Handle, app.coord, ...
                   A3200StatusItem.PositionFeedback, 0);
       else
@@ -144,6 +146,10 @@ classdef updatePosition < handle
     end
     
     function stop(app)
+      global RPAS_C
+      if isempty(RPAS_C)
+          RPAS_C=RPAS_Constants(parentDir(pwd));
+      end
         if ~isempty(app.tm) && strcmp(app.tm.Running, 'on')
             if isequal(get(app.tm, 'Running'),'on')
                 app.tm.stop();
@@ -155,7 +161,7 @@ classdef updatePosition < handle
                 delete(app.tm);
                 app.tm=[];
             end
-            if RPAS_Constants.A3200Available
+            if RPAS_C.A3200Available
                 A3200Disconnect(app.A3200Handle);
             end
         end

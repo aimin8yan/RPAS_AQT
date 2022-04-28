@@ -37,6 +37,7 @@ function result=RPAS_geoProperties(img, ROI, thresh)
     nn=ROI(2):ROI(2)+ROI(4)-1;
     img1(mm,nn)=img(mm,nn);
     
+    
     %threshold
     if nargin<3
         thresh=round(median(img1(:))+2*std(img1(:)));

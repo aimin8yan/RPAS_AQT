@@ -1,7 +1,8 @@
-  function [spots, bw]=findSpots(img, pix, minArea, maxArea)
+  function [spots, bw, bw1]=findSpots(img, pix, minArea, maxArea)
   
     %first determine threshold
     img= double(img);
+    sz=size(img);
     
     T = boundValue(img);
     
@@ -10,7 +11,6 @@
     bw = img<T;
     bw = imfill(bw,'holes');
     
-    
     [label, numLabel]=bwlabel(bw); % labeling the blobs
     %region properties
     prop=regionprops(label, img, 'Area', 'Centroid', 'Eccentricity');
@@ -18,6 +18,9 @@
     %minimum area in pixel numbers 
     nArea=minArea/pix^2;
     mArea=maxArea/pix^2;
+
+    bw1=bw;
+
     areas=[];
     Eccentricity=[];
     center=[];
@@ -36,6 +39,7 @@
     else 
       spots=[];
     end
+
   return;
 end
 
